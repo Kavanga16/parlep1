@@ -38,4 +38,6 @@ def main() -> int:
 
     return code
 
+def cli() -> None:
+    raise SystemExit(main())
 
