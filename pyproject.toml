@@ -11,3 +11,9 @@ requires-python = ">=3.10"
 
 [project.scripts]
 servercheck = "servercheck.cli:cli"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]

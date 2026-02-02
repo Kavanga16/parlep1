@@ -1,6 +1,7 @@
-import sys
-import json
 import argparse
+import json
+import sys
+
 
 def cpu_status(cpu):
     if cpu > 75:
@@ -19,17 +20,13 @@ def main() -> int:
     args = parser.parse_args()
     name = args.name
     cpu = args.cpu
-    
 
     if cpu < 0 or cpu > 100:
         print("CPU must be in range 0-100", file=sys.stderr)
         return 2
-    
 
     status = cpu_status(cpu)
     code = 1 if status == "ALERT" else 0
-
-    
 
     if args.json:
         print(json.dumps({"name": name, "cpu": cpu, "status": status, "exit_code": code}))
@@ -38,6 +35,6 @@ def main() -> int:
 
     return code
 
+
 def cli() -> None:
     raise SystemExit(main())
-
