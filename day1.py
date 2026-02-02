@@ -1,9 +1,10 @@
 def cpu_status(cpu):
-     if cpu > 75 :
-         return("ALERT") 
-     if cpu > 50:
-        return("WARN") 
-     return "OK"
+    if cpu > 75:
+        return "ALERT"
+    if cpu > 50:
+        return "WARN"
+    return "OK"
+
 
 name = input("Server name:").strip()
 
@@ -13,7 +14,7 @@ while True:
 cpu_value = input("")
 name = "db"
 cpu = int(cpu_value)
-status = cpu_status(cpu) 
+status = cpu_status(cpu)
 
 
 print(f"{name:10} |  CPU: {cpu:>3}% | STATUS: {status} ")
