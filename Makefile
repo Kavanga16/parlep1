@@ -1,4 +1,4 @@
-.PHONY: help fmt fmt-check lint test check
+.PHONY: help fmt fmt-check lint test check fix
 
 PY=./.venv/Scripts/python.exe
 
@@ -18,3 +18,7 @@ test:
 	$(PY) -m pytest -q
 
 check: lint fmt-check test
+
+fix:
+	$(PY) -m ruff check . --fix 
+	$(PY) -m ruff format .
