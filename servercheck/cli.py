@@ -2,13 +2,7 @@ import argparse
 import json
 import sys
 
-
-def cpu_status(cpu):
-    if cpu > 75:
-        return "ALERT"
-    if cpu > 50:
-        return "WARN"
-    return "OK"
+from servercheck.core import cpu_status
 
 
 def main() -> int:
