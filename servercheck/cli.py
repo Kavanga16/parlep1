@@ -2,7 +2,7 @@ import argparse
 import json
 import sys
 
-from servercheck.core import cpu_status
+from servercheck.core import cpu_status, validate_cpu
 
 
 def main() -> int:
@@ -15,7 +15,9 @@ def main() -> int:
     name = args.name
     cpu = args.cpu
 
-    if cpu < 0 or cpu > 100:
+    try:
+        validate_cpu(cpu)
+    except ValueError:
         print("CPU must be in range 0-100", file=sys.stderr)
         return 2
 
