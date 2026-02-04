@@ -31,3 +31,10 @@ def test_cli_out_of_range():
     assert r.returncode == 2
     assert r.stdout == ""
     assert "CPU must be in range 0-100" in r.stderr
+
+
+def test_cli_verbose():
+    r = run_cli("-n", "api", "-c", "60", "--verbose")
+    assert r.returncode == 0
+    assert "STATUS: WARN" in r.stdout
+    assert "INFO:" in r.stderr

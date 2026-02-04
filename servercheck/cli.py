@@ -1,5 +1,6 @@
 import argparse
 import json
+import logging
 import sys
 
 from servercheck import __version__
@@ -12,10 +13,27 @@ def main() -> int:
     parser.add_argument("-n", "--name", required=True, help="server name")
     parser.add_argument("-c", "--cpu", required=True, type=int, help="cpu usage (0-100)")
     parser.add_argument("--json", action="store_true", help="output in json")
+    parser.add_argument("-v", "--verbose", action="store_true", help="verbose logs to stderr")
+    parser.add_argument("-q", "--quiet", action="store_true", help="only errors to stderr")
 
     args = parser.parse_args()
+
+    level = logging.WARNING
+    if args.verbose:
+        level = logging.INFO
+    if args.quiet:
+        level = logging.ERROR
+
+    logging.basicConfig(
+        level=level,
+        stream=sys.stderr,
+        format="%(levelname)s: %(message)s",
+    )
+
     name = args.name
     cpu = args.cpu
+
+    logging.info("Parsed args: name=%s cpu=%s json=%s", name, cpu, args.json)
 
     try:
         validate_cpu(cpu)
