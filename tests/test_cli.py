@@ -1,11 +1,15 @@
 import json
+import os
 import subprocess
 import sys
 
 
-def run_cli(*args: str) -> subprocess.CompletedProcess[str]:
+def run_cli(*args: str, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
     cmd = [sys.executable, "-m", "servercheck", *args]
-    return subprocess.run(cmd, capture_output=True, text=True)
+    merged = os.environ.copy()
+    if env:
+        merged.update(env)
+    return subprocess.run(cmd, capture_output=True, text=True, env=merged)
 
 
 def test_cli_warn_text():
@@ -45,3 +49,30 @@ def test_cli_quiet_suppresses_info_logs():
     assert r.returncode == 0
     assert "STATUS: WARN" in r.stdout
     assert r.stderr.strip() == ""
+
+
+def test_cli_thresholds_from_env_change_status():
+    r = run_cli(
+        "-napi",
+        "-c",
+        "60",
+        env={"SERVERCHECK_WARN": "10", "SERVERCHECK_ALERT": "20"},
+    )
+    assert r.returncode == 1
+    assert "STATUS: ALERT" in r.stdout
+
+
+def test_cli_args_override_env_thresholds():
+    r = run_cli(
+        "-n",
+        "api",
+        "-c",
+        "60",
+        "--warn",
+        "50",
+        "--alert",
+        "75",
+        env={"SERVERCHECK_WARN": "10", "SERVERCHECK_ALERT": "20"},
+    )
+    assert r.returncode == 0
+    assert "STATUS: WARN" in r.stdout

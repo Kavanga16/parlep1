@@ -1,10 +1,11 @@
 import argparse
 import json
 import logging
+import os
 import sys
 
 from servercheck import __version__
-from servercheck.core import cpu_status, validate_cpu
+from servercheck.core import cpu_status, validate_cpu, validate_thresholds
 
 
 def main() -> int:
@@ -15,8 +16,22 @@ def main() -> int:
     parser.add_argument("--json", action="store_true", help="output in json")
     parser.add_argument("-v", "--verbose", action="store_true", help="verbose logs to stderr")
     parser.add_argument("-q", "--quiet", action="store_true", help="only errors to stderr")
+    parser.add_argument("--warn", type=int, default=None, help="warn threshold (0-100)")
+    parser.add_argument("--alert", type=int, default=None, help="alert threshold (0-100)")
 
     args = parser.parse_args()
+
+    warn_env = os.getenv("SERVERCHECK_WARN")
+    alert_env = os.getenv("SERVERCHECK_ALERT")
+
+    warn = args.warn if args.warn is not None else int(warn_env) if warn_env else 50
+    alert = args.alert if args.alert is not None else int(alert_env) if alert_env else 75
+
+    try:
+        validate_thresholds(warn, alert)
+    except ValueError:
+        print("Invalid thresholds", file=sys.stderr)
+        return 2
 
     level = logging.WARNING
     if args.verbose:
@@ -41,7 +56,7 @@ def main() -> int:
         print("CPU must be in range 0-100", file=sys.stderr)
         return 2
 
-    status = cpu_status(cpu)
+    status = cpu_status(cpu, warn=warn, alert=alert)
     code = 1 if status == "ALERT" else 0
 
     if args.json:
