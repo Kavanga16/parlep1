@@ -38,3 +38,10 @@ def test_cli_verbose():
     assert r.returncode == 0
     assert "STATUS: WARN" in r.stdout
     assert "INFO:" in r.stderr
+
+
+def test_cli_quiet_suppresses_info_logs():
+    r = run_cli("-n", "api", "-c", "60", "--quiet")
+    assert r.returncode == 0
+    assert "STATUS: WARN" in r.stdout
+    assert r.stderr.strip() == ""
