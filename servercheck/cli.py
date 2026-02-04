@@ -2,11 +2,13 @@ import argparse
 import json
 import sys
 
+from servercheck import __version__
 from servercheck.core import cpu_status, validate_cpu
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Check server CPU and return status")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("-n", "--name", required=True, help="server name")
     parser.add_argument("-c", "--cpu", required=True, type=int, help="cpu usage (0-100)")
     parser.add_argument("--json", action="store_true", help="output in json")
