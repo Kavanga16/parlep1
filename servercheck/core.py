@@ -1,7 +1,7 @@
-def cpu_status(cpu: int) -> str:
-    if cpu > 75:
+def cpu_status(cpu: int, warn: int, alert: int) -> str:
+    if cpu > alert:
         return "ALERT"
-    if cpu > 50:
+    if cpu > warn:
         return "WARN"
     return "OK"
 
@@ -9,6 +9,11 @@ def cpu_status(cpu: int) -> str:
 def validate_cpu(cpu: int) -> None:
     if cpu < 0 or cpu > 100:
         raise ValueError("CPU must be in range 0-100")
+
+
+def validate_thresholds(warn, alert) -> None:
+    if not (0 < warn < alert < 100):
+        raise ValueError("Thresholds must satisfy 0 < warn < alert < 100")
 
 
 def exit_code(status: str) -> int:

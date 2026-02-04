@@ -2,3 +2,7 @@
 __pycache__/
 *.pyc
 *.egg-info/
+out.txt
+err.txt
+out.json
+debug.log
